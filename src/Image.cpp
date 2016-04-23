@@ -50,7 +50,10 @@ namespace BTHJAC013{
 		return true;
 	}
 
-	void Image(std::string fileName){
-
+	//Basic constructor
+	void Image(){
+		this.name = "";
+		this.width = 0;
+		this.height = 0;
 	}
 }
