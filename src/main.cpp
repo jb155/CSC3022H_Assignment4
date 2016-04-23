@@ -9,8 +9,8 @@ int main(int argc, const char* argv[]) {
     std::string command = argv[1];
 
     string image1Name = argv[2];
-    BTHJAC013::Image image1;
-    image1 << image1Name;
+    BTHJAC013::Image sourceImage;
+    sourceImage << image1Name;
 
     BTHJAC013::Image image2;
 
