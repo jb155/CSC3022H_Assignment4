@@ -1,9 +1,16 @@
-#include "Image.h"
-
 #include <fstream>
 
+#include "Image.h"
+
 namespace BTHJAC013{
-	bool loadImage(std::string fileName){
+	//Basic constructor
+	void Image::Image(){
+		this.name = "";
+		this.width = 0;
+		this.height = 0;
+	}
+
+	bool Image::loadImage(std::string fileName){
 		this->name = fileName;
 		//in file stream setup
 		std::ifstream inFilePic;
@@ -45,15 +52,9 @@ namespace BTHJAC013{
 
 			//this->data = std::unique_ptr<unsigned char []>(imageBuf);
 
-		return true;
-	}catch (Exception e){
-		return false;
-	}
-
-	//Basic constructor
-	void Image(){
-		this.name = "";
-		this.width = 0;
-		this.height = 0;
-	}
+			return true;
+		}catch (Exception e){
+			return false;
+		}
+}
 }

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Image.h"
 
 int main(int argc, const char* argv[]) {
@@ -9,7 +11,7 @@ int main(int argc, const char* argv[]) {
     std::string command = argv[1];
 
     string image1Name = argv[2];
-    BTHJAC013::Image sourceImage;
+    BTHJAC013::Image image1;
     sourceImage << image1Name;
 
     BTHJAC013::Image image2;
@@ -30,12 +32,12 @@ int main(int argc, const char* argv[]) {
         image2 << argv[3];
         outputImage = image1 / image2;
     } else if (command == "-t") { //Threshold
-        int threshold = stoi(argv[3]);
+        int threshold = std::stoi(argv[3]);
         outputImage = image1 * threshold;
     } else {
-        cout << "Command: " << command << " is not recognized as a legitimate command.";
+        std::cout << "Command: " << command << " is not recognized as a legitimate command.";
         return 0;
     }
-    imgOut >> outputName;
+    outputImage >> outputName;
     return 0;
 }
