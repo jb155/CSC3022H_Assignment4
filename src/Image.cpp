@@ -79,6 +79,23 @@ namespace BTHJAC013{
 		}
 }
 	bool Image::saveImage (std::string fileName){
-		return true;
+		std::ofstream imgOut(fileName, std::ios::out | std::ios::binary);
+
+		if (!imgOut.is_open()) {
+			std::cout << "Could not create the file: " << fileName << std::endl;
+			return false;
+		}
+
+		//header
+		std::sting output = "P5\n#"+fileName+"\n"+this->width+" "+this->height+"\n255";
+        imgOut << output << std::endl;
+
+        ImageIterator it = this->begin();
+        while (it != this->end()) {
+            imgOut << *it;
+            it++;
+        }
+        imgOut.close();
+        return true;
 	}
 }
