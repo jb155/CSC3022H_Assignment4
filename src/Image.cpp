@@ -3,51 +3,51 @@
 #include <fstream>
 
 namespace BTHJAC013{
-	bool loadImageFromFile(std::string fileName){
-
+	bool loadImage(std::string fileName){
+		this->name = fileName;
 		//in file stream setup
-		ifstream inFilePic;
-		//Open file
-		inFilePic.open(fileName, ios::in | ios:binary);
+		std::ifstream inFilePic;
 		try{
+			//Open file
 			//check if file can be read
-			if(!inFilePic){
+			if(!inFilePic.open(fileName, std::ios::in | std::ios:binary);){
 				cout << "Can't read image: " << fname << endl;
-				exit(1);
+				return false;
 			}
 
-			std::string header; 
-			int b; //width, height, ------something------
+			std::string lineRead; 
 
-			ifs >> header; 
+			while (!inFile.eof()){
+				getline(inFile, lineRead);
 
-			if (strcmp(header.c_str(), "P6") != 0) {
-				cout << "Can't read input file: " << fname << endl;
-				exit(1);
+				if(lineRead[0]=='#' || line == "P5"){
+					continue;
+				} else if (lineRead == "255"){											//end of image
+					break;
+				} else {
+					std::stringstream strinS(lineRead);
+					std::string temp;
+
+					getline(strinS, temp, ' ');
+					this->width = std::stoi(temp);										//set width of the image
+
+					getline(strinS, temp, ' ');
+					this->height = std::stoi(temp);										//set height of the image
+				}
 			}
 
-			ifs >> this.width >> this.height >> b; 
-			//img.w = w; 
-			//img.h = h; 
-			//img.pixels = new Image::Rgb[w * h]; // this is throw an exception if bad_alloc
-			unsigned char *tempBuffer = new unsigned char[this.width*this.height]();
-			ifs.ignore(256, '\n'); // skip empty lines in necessary until we get to the binary data 
-			unsigned char pix; // read each pixel one by one and convert bytes to floats 
-			for (int i = 0; i < this.width*this.height; ++i) {
-				ifs.read(reinterpret_cast<char>(pix), 1); 
-				tempBuffer.[i] = pix / 255.f;
-			}
-			ifs.close(); 
+			unsigned char * imageBuf = new unsigned char [this->width*this->height];
+			inFile.read((char*)imageBuf, this->width*this->height);
+			infile.close();
 
-			this.data = move(tempBuffer);
+			this->data = move(imageBuf);
+			delete[] imageBuf;
 
-			delete[] tempBuffer;
-		} catch (const char *err) { 
-			fprintf(stderr, "%s\n", err); 
-			ifs.close(); 
-		}
+			//this->data = std::unique_ptr<unsigned char []>(imageBuf);
 
 		return true;
+	}catch (Exception e){
+		return false;
 	}
 
 	//Basic constructor

@@ -15,7 +15,7 @@ namespace BTHJAC013 {
 			Image(){}
 			~Image();
 
-			void load(std::string file);											//load the image file in. Save/parse to the data var
+			void loadImage(std::string file);											//load the image file in. Save/parse to the data var
 			//void save(std::string file);											//save the image data to given file name
 
 			std::string getName(void){return name;}
@@ -95,7 +95,7 @@ namespace BTHJAC013 {
 			// define begin()/end() to get iterator to start and
 			// "one-past" end.
 			iterator begin(void) { return iterator(data.get())} // etc
-			iterator end(void) {return iterator()}
+			iterator end(void) {return ImageIterator(this->imageData.get(), width * height)}
 	};
 }
 #endif
