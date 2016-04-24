@@ -1,3 +1,23 @@
+/*                                /   \       
+ _                        )      ((   ))     (
+(@)                      /|\      ))_((     /|\
+|-|                     / | \    (/\|/\)   / | \                      (@)
+| | -------------------/--|-voV---\`|'/--Vov-|--\---------------------|-|
+|-|  Image.h                '^`   (o o)  '^`              04-04-2016  | |
+| |								  `\Y/'								  |-|
+|-|																	  | |
+| |						Created by: Jacques Botha					  |-|
+|-|																	  | |
+| |			Project: CSC3022H Assignment4: Image processing			  |-|
+|_|___________________________________________________________________| |
+(@)              l   /\ /         ( (       \ /\   l                `\|-|
+                 l /   V           \ \       V   \ l                  (@)
+                 l/                _) )_          \I
+                                   `\ /'
+									 *		"There be dragons son" - Wise man
+*/
+
+
 #ifndef IMAGE_H
 #define IMAGE_H
 
@@ -40,6 +60,9 @@ namespace BTHJAC013 {
 				this->height = rhs.height;
 				this->imageData = std::move(rhs.imageData);
 			}
+
+			//Operators overloads		(Took me a while to readlize that it is needed to use the iterators in here o_O)
+
 
 			class imageIterator
 			{
