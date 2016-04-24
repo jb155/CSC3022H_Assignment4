@@ -23,6 +23,7 @@
 
 #include <string>
 #include <memory>
+#include <iostream>
 
 namespace BTHJAC013 {
 	class Image
@@ -32,7 +33,7 @@ namespace BTHJAC013 {
 			int width, height;														//Pixel dimensions of the image bieng read
 			std::unique_ptr<unsigned char[]> data;									//Data of the buffered image
 		public:
-			Image(){}
+			Image();
 			Image(std::string fileName){
 				if(!loadImage(fileName)){
 					std::cout<<"Could not successfully load in image " + fileName << std::endl;
@@ -41,7 +42,7 @@ namespace BTHJAC013 {
 			~Image();
 
 			bool loadImage(std::string file);										//load the image file in. Save/parse to the data var
-			//void save(std::string file);											//save the image data to given file name
+			bool saveImage(std::string file);											//save the image data to given file name
 
 			std::string getName(void){return name;}
 
@@ -58,7 +59,7 @@ namespace BTHJAC013 {
 				this->name = std::move(rhs.name);
 				this->width = rhs.width;
 				this->height = rhs.height;
-				this->imageData = std::move(rhs.imageData);
+				this->data = std::move(rhs.data);
 			}
 
 			//Operators overloads		(Took me a while to readlize that it is needed to use the iterators in here o_O)
@@ -66,7 +67,7 @@ namespace BTHJAC013 {
 			Image &operator=(const Image &rhs) {
 				this->width = rhs.width;
 				this->height = rhs.height;
-				this->load(rhs.filename);
+				this->loadImage(rhs.name);
 				return *this;
 			}
 
@@ -126,24 +127,22 @@ namespace BTHJAC013 {
 			}
 
 			//Chortcut operator to save file to given filename
-			void operator>>(const std::string fileName) {
-				this->save(file);
+			void operator>>(const std::string file) {
+				this->saveImage(file);
 			}
 
 			//Chortcut operator to load file to given filename
-			void operator<<(const std::string fileName) {
-				this->loadFile(file);
+			void operator<<(const std::string file) {
+				this->loadImage(file);
 			}
 
 			class imageIterator
 			{
 				private:
-					unsigned char *ptr;
-					// construct only via Image class (begin/end)
-					imageIterator(u_char *p) : ptr(p) {}
+					unsigned char *pointer;
+					int index;
 				public://copy construct is public
-					//Constructors
-					imageIterator( const imageIterator & rhs) : ptr(rhs.ptr) {}			
+					//Constructors		
 					imageIterator(unsigned char *ptr) : pointer(ptr), index(0) { }	//Starts off at beginning of array
 					imageIterator(unsigned char *ptr, int count) : pointer(ptr), index(count) { }//Starts off at a given point in the array.
 					imageIterator(const imageIterator &copyIter) : pointer(copyIter.pointer), index(copyIter.index){ }//Copy
@@ -193,8 +192,8 @@ namespace BTHJAC013 {
 			};
 			// define begin()/end() to get iterator to start and
 			// "one-past" end.
-			imageIterator begin(void) { return imageIterator(data.get())} // etc
-			imageIterator end(void) {return imageIterator(this->imageData.get(), width * height)}
+			imageIterator begin(void) { return imageIterator(data.get());} // etc
+			imageIterator end(void) {return imageIterator(this->data.get(), width * height);}
 	};
 }
 #endif

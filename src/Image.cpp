@@ -18,15 +18,16 @@
 */
 
 #include <fstream>
+#include <sstream> 
 
 #include "Image.h"
 
 namespace BTHJAC013{
 	//Basic constructor
-	void Image::Image(){
-		this.name = "";
-		this.width = 0;
-		this.height = 0;
+	Image::Image(){
+		this->name = "";
+		this->width = 0;
+		this->height = 0;
 	}
 
 	bool Image::loadImage(std::string fileName){
@@ -35,45 +36,49 @@ namespace BTHJAC013{
 		std::ifstream inFilePic;
 		try{
 			//Open file
+			inFilePic.open(fileName, std::ios::in | std::ios::binary);
 			//check if file can be read
-			if(!inFilePic.open(fileName, std::ios::in | std::ios:binary);){
-				cout << "Can't read image: " << fname << endl;
+			if(!inFilePic.is_open()){
+				std::cout << "Can't read image: " << fileName << std::endl;
 				return false;
 			}
 
 			std::string lineRead; 
 
-			while (!inFile.eof()){
-				getline(inFile, lineRead);
+			while (!inFilePic.eof()){
+				getline(inFilePic, lineRead);
 
-				if(lineRead[0]=='#' || line == "P5"){
+				if(lineRead[0]=='#' || lineRead == "P5"){
 					continue;
 				} else if (lineRead == "255"){											//end of image
 					break;
 				} else {
-					std::stringstream strinS(lineRead);
+					std::stringstream stringS(lineRead);
 					std::string temp;
 
-					getline(strinS, temp, ' ');
+					getline(stringS, temp, ' ');
 					this->width = std::stoi(temp);										//set width of the image
 
-					getline(strinS, temp, ' ');
+					getline(stringS, temp, ' ');
 					this->height = std::stoi(temp);										//set height of the image
 				}
 			}
 
 			unsigned char * imageBuf = new unsigned char [this->width*this->height];
-			inFile.read((char*)imageBuf, this->width*this->height);
-			infile.close();
+			inFilePic.read((char*)imageBuf, this->width*this->height);
+			inFilePic.close();
 
-			this->data = move(imageBuf);
-			delete[] imageBuf;
+			//this->data = move(imageBuf);
+			//delete[] imageBuf;
 
-			//this->data = std::unique_ptr<unsigned char []>(imageBuf);
+			this->data = std::unique_ptr<unsigned char []>(imageBuf);
 
 			return true;
-		}catch (Exception e){
+		}catch (...){
 			return false;
 		}
 }
+	bool Image::saveImage (std::string fileName){
+		return true;
+	}
 }
