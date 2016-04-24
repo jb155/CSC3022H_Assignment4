@@ -62,7 +62,78 @@ namespace BTHJAC013 {
 			}
 
 			//Operators overloads		(Took me a while to readlize that it is needed to use the iterators in here o_O)
+			//Copy Assignment Operator
+			Image &operator=(const Image &rhs) {
+				this->width = rhs.width;
+				this->height = rhs.height;
+				this->load(rhs.filename);
+				return *this;
+			}
 
+			//Move Assignment Operator
+			Image &operator=(Image &&rhs) {
+				this->width = rhs.width;
+				this->height = rhs.height;
+				this->data = std::move(rhs.data);
+				return *this;
+			}
+
+			//Add two images together.
+			Image operator+=(const Image &image) {
+				Image result(*this);
+				return result;
+			}
+
+			//Add two images together.
+			Image operator+(const Image &image) {
+				Image result(*this);
+				return result;
+			}
+
+			//Subtract two images from each other.
+			Image operator-=(const Image &image) {
+				Image result(*this);
+				return result;
+			}
+
+			//Subtract two images from each other.
+			Image operator-(const Image &image) {
+				Image result(*this);
+				return result;
+			}
+
+			//Masking operator. 
+			Image operator/(const Image &image) {
+				Image result(*this); //If the mask's pixel value is 0, the pixel value is set to 0 too.
+				return result;
+			}
+
+			//Invert operator. 
+			Image operator!() {
+				Image result(*this); //p = (255 - p)
+				return result;
+			}
+
+			//Threshold operator.
+			Image operator*(const int threshold) {
+				Image result(*this);	//Turns all pixels that surpass the given threshold white, everything else black.
+				return result;
+			}
+
+			//Comparison operator ==
+			bool operator==(const Image img) {
+				return true;
+			}
+
+			//Chortcut operator to save file to given filename
+			void operator>>(const std::string fileName) {
+				this->save(file);
+			}
+
+			//Chortcut operator to load file to given filename
+			void operator<<(const std::string fileName) {
+				this->loadFile(file);
+			}
 
 			class imageIterator
 			{
