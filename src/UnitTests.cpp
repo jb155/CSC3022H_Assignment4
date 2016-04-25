@@ -31,45 +31,52 @@ BTHJAC013::Image mask("donkey_mask.pgm");
 BTHJAC013::Image temp;
 
 TEST_CASE("Test Adding", "[add]") {
-    temp << "Tests/add_test.pgm";
+	std::cout << "0" << std::endl;
+    temp << "Tests/AdditionTest.pgm";
     REQUIRE((mainImg + mask) == temp);
 }
 
 TEST_CASE("Test Subtracting", "[subtract]") {
-    temp << "Tests/subtract_test.pgm";
+	std::cout << "1" << std::endl;
+    temp << "Tests/SubtractionTest.pgm";
     REQUIRE((mainImg - mask) == temp);
 }
 
 TEST_CASE("Test Inverting", "[invert]") {
-    temp << "Tests/invert_test.pgm";
+	std::cout << "2" << std::endl;
+    temp << "Tests/InversionTest.pgm";
     REQUIRE(!mask == temp);
 }
 
 TEST_CASE("Test Masking", "[mask]") {
-    temp << "Tests/mask_test.pgm";
+	std::cout << "3" << std::endl;
+    temp << "Tests/MaskingTest.pgm";
     REQUIRE((mainImg / mask) == temp);
 }
 
 TEST_CASE("Test Threshold", "[threshold]") {
-    temp << "Tests/200_threshold_test.pgm";
+	std::cout << "4" << std::endl;
+    temp << "Tests/ThresholdTest(200).pgm";
     REQUIRE((mainImg * 200) == temp);
 }
 
 TEST_CASE("Test Save", "[save]") {
-    temp << "Tests/save_test.pgm";
+	std::cout << "4" << std::endl;
+    temp << "Tests/SavingTest.pgm";
     REQUIRE((mainImg + mask) == temp);
-    (mainImg + mask) >> "Tests/save_test.pgm";
-    temp << "Tests/save_test.pgm";
+    (mainImg + mask) >> "Tests/SavingTest.pgm";
+    temp << "Tests/SavingTest.pgm";
     REQUIRE((mainImg + mask) == temp);
 }
 
 TEST_CASE("Test Iterator", "[iterator]") {
-    temp << "Tests/save_test.pgm";
+	std::cout << "5" << std::endl;
+    temp << "Tests/SavingTest.pgm";
     REQUIRE((mainImg + mask) == temp);
-    MLLJET001::Image::ImageIterator tempIter = temp.begin();
-    MLLJET001::Image temp2;
+    BTHJAC013::Image::imageIterator tempIter = temp.begin();
+    BTHJAC013::Image temp2;
     temp2 = mainImg + mask;
-    MLLJET001::Image::ImageIterator maskIter = temp2.begin();
+    BTHJAC013::Image::imageIterator maskIter = temp2.begin();
 
     bool allEqual = true;
     while (tempIter != temp.end()) {

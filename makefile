@@ -3,7 +3,7 @@ FLAGS=-std=c++11
 SOURCES=src/main.cpp src/Image.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 
-TEST_SOURCES=src/Image.cpp src/Unittests.cpp
+TEST_SOURCES=src/Image.cpp src/UnitTests.cpp
 TEST_OBJECTS=$(TEST_SOURCES:.cpp=.o)
 
 EXE_NAME=imageops
