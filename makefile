@@ -1,10 +1,9 @@
 CC=g++
-CCFLAGS= -std=c++11
+FLAGS=-std=c++11
+SOURCES=src/main.cpp src/Image.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
 
-SOURCES= main.cpp Image.h Image.cpp
-OBJECTS= main.o Image.o
-
-TEST_SOURCES=Image.cpp Unittests.cpp
+TEST_SOURCES=src/Image.cpp src/Unittests.cpp
 TEST_OBJECTS=$(TEST_SOURCES:.cpp=.o)
 
 EXE_NAME=imageops
@@ -16,7 +15,7 @@ default: $(OBJECTS)
 	$(CC) -c $< -o $@ $(FLAGS)
 
 clean:
-	rm -f ImageOps *.o
+	rm -f $(OBJECTS) build/$(EXE_NAME) build/test
 
 run: default
 	cd ./build && ./$(EXE_NAME) $(ARGS)
@@ -26,4 +25,3 @@ tests: $(OBJECTS)
 
 run-tests: tests
 	cd ./build && ./test
-
