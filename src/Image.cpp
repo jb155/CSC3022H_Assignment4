@@ -30,6 +30,7 @@ namespace BTHJAC013{
 		this->height = 0;
 	}
 
+
 	bool Image::loadImage(std::string fileName){
 		this->name = fileName;
 		//in file stream setup
@@ -87,10 +88,10 @@ namespace BTHJAC013{
 		}
 
 		//header
-		std::sting output = "P5\n#"+fileName+"\n"+this->width+" "+this->height+"\n255";
+		std::string output = "P5\n#"+fileName+"\n"+std::to_string(this->width)+" "+std::to_string(this->height)+"\n255";
         imgOut << output << std::endl;
 
-        ImageIterator it = this->begin();
+        imageIterator it = this->begin();
         while (it != this->end()) {
             imgOut << *it;
             it++;

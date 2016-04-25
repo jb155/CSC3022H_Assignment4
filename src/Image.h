@@ -39,10 +39,12 @@ namespace BTHJAC013 {
 					std::cout<<"Could not successfully load in image " + fileName << std::endl;
 				}
 			}
-			~Image();
+			~Image(){
+				delete[] &data;
+			}
 
 			bool loadImage(std::string file);										//load the image file in. Save/parse to the data var
-			bool saveImage(std::string file);											//save the image data to given file name
+			bool saveImage(std::string file);										//save the image data to given file name
 
 			std::string getName(void){return name;}
 
@@ -62,7 +64,7 @@ namespace BTHJAC013 {
 				this->data = std::move(rhs.data);
 			}
 
-			//Operators overloads		(Took me a while to readlize that it is needed to use the iterators in here o_O)
+			//Operators overloads													(Took me a while to readlize that it is needed to use the iterators in here o_O)
 			//Copy Assignment Operator
 			Image &operator=(const Image &rhs) {
 				this->width = rhs.width;
@@ -80,49 +82,129 @@ namespace BTHJAC013 {
 			}
 
 			//Add two images together.
-			Image operator+=(const Image &image) {
-				Image result(*this);
-				return result;
+			Image operator+(const Image &image) {
+				Image resultImage(*this);
+				if (this->width != image.width || this->height != image.height) {			//checks that the 2 images are the same size. f they are not, notify the user
+					std::cout << "Images do not have the same size." << std::endl;
+					exit(0);
+				}
+				resultImage += image;														//Calls the overloaded *= operator
+				return resultImage;
 			}
 
 			//Add two images together.
-			Image operator+(const Image &image) {
-				Image result(*this);
-				return result;
-			}
+			Image operator+=(const Image &image) {
+				imageIterator thisImageIterator = this->begin();
+				imageIterator otherImageIterator = image.begin();
 
-			//Subtract two images from each other.
-			Image operator-=(const Image &image) {
-				Image result(*this);
-				return result;
+				while (thisImageIterator != this->end()) {
+					if ((*thisImageIterator + *otherImageIterator) > 255) {					//Value (of overloaded + operator) cannot exceed 255
+						*thisImageIterator = 255;
+					} else {
+						*thisImageIterator = *thisImageIterator + *otherImageIterator;				//Calls the overided + operator
+					}
+					thisImageIterator++;													//Calls the overloaded ++ operator
+					otherImageIterator++;													//Calls the overloaded ++ operator
+				}
+
+				return *this;
 			}
 
 			//Subtract two images from each other.
 			Image operator-(const Image &image) {
 				Image result(*this);
+				if (this->width != image.width || this->height != image.height) {			//checks that the 2 images are the same size. f they are not, notify the user
+					std::cout << "Images do not have the same size." << std::endl;
+					exit(0);
+				}
+				result -= image;
 				return result;
+			}
+
+			//Subtract two images from each other. very similar to the += overload operator...except subtracts
+			Image operator-=(const Image &image) {
+				imageIterator thisImageIterator = this->begin();
+				imageIterator otherImageIterator = image.begin();
+
+				while (thisImageIterator != this->end()) {
+					if ((*thisImageIterator - *otherImageIterator) < 0) {					//Value (of overloaded - operator) cannot be less than 0
+						*thisImageIterator = 0;
+					} else {
+						*thisImageIterator = *thisImageIterator - *otherImageIterator;				//Calls the overided - operator
+					}
+					thisImageIterator++;													//Calls the overloaded ++ operator
+					otherImageIterator++;													//Calls the overloaded ++ operator
+				}
+
+				return *this;
 			}
 
 			//Masking operator. 
 			Image operator/(const Image &image) {
-				Image result(*this); //If the mask's pixel value is 0, the pixel value is set to 0 too.
+				Image result(*this); 
+				if (this->width != image.width || this->height != image.height) {			//checks that the 2 images are the same size. f they are not, notify the user
+					std::cout << "Images do not have the same size." << std::endl;
+					exit(0);
+				}
+
+				imageIterator thisImageIterator = result.begin();
+				imageIterator otherImageIterator = image.begin();
+
+				while (thisImageIterator != result.end()) {
+					if (*otherImageIterator == 0) {											//If the mask's pixel value is 0, the pixel value is set to 0 too.
+						*thisImageIterator = 0;
+					}
+					thisImageIterator++;
+					otherImageIterator++;
+				}
+
 				return result;
 			}
 
 			//Invert operator. 
 			Image operator!() {
-				Image result(*this); //p = (255 - p)
+				Image result(*this); 
+				imageIterator thisImageIterator = result.begin();
+
+				while (thisImageIterator != result.end()) {
+					*thisImageIterator = (unsigned char) (255 - *thisImageIterator);		//Inverts 'colour' ie: val = val - 255
+					thisImageIterator++;
+				}
+
 				return result;
 			}
 
 			//Threshold operator.
 			Image operator*(const int threshold) {
-				Image result(*this);	//Turns all pixels that surpass the given threshold white, everything else black.
+				Image result(*this);	
+				imageIterator thisImageIterator = result.begin();
+
+				while (thisImageIterator != result.end()) {
+					*thisImageIterator = (unsigned char) ((*thisImageIterator > threshold) ? 255 : 0);	//all pixels > threshold = white, else black
+					thisImageIterator++;
+				}
+
 				return result;
 			}
 
 			//Comparison operator ==
-			bool operator==(const Image img) {
+			bool operator==(const Image &image) {										//checks if 2 images are the...well..same image
+
+				if (this->height != image.height || this->width != image.width) {		//does the same as the imagesSameSize() funct...but instead of exiting...returns a bool
+					return false;
+				}
+				
+				imageIterator thisImageIterator = this->begin();
+				imageIterator otherImageIterator = image.begin();
+
+				while (thisImageIterator != this->end()) {
+					if (*thisImageIterator != *otherImageIterator) {
+						return false;
+					}
+
+					thisImageIterator++;
+					otherImageIterator++;
+				}
 				return true;
 			}
 
@@ -143,40 +225,28 @@ namespace BTHJAC013 {
 					int index;
 				public://copy construct is public
 					//Constructors		
-					imageIterator(unsigned char *ptr) : pointer(ptr), index(0) { }	//Starts off at beginning of array
+					imageIterator(unsigned char *ptr) : pointer(ptr), index(0) { }		//Starts off at beginning of array
 					imageIterator(unsigned char *ptr, int count) : pointer(ptr), index(count) { }//Starts off at a given point in the array.
 					imageIterator(const imageIterator &copyIter) : pointer(copyIter.pointer), index(copyIter.index){ }//Copy
 
 					//Overload operators
-					imageIterator &operator++() {								//Increment the index by one
+					imageIterator &operator++() {										//Increment the index by one
 						++index;
 						return *this;
 					}
 
-					/*// Increment the index of the interator.
+					// Increment the index of the interator.
 					imageIterator operator++(int) {
 						imageIterator tempIter(*this);
-						operator++();
+						operator++();													//Calls the above overriden ++ operator
 						return tempIter;
-		            }*/
+		            }
 
-					imageIterator &operator--() {								//Reduce the index by one
-						--index;
-						return *this;
-					}
-
-					/*// Decrement the index of the interator.
-					imageIterator operator--(int) {
-						imageIterator tempIter(*this);
-						operator--();
-						return tempIter;
-					}*/
-
-					unsigned char &operator*() {							//Deref val of array at looc index and returns it
+					unsigned char &operator*() {										//Deref val of array at looc index and returns it
 						return pointer[index];
 					}
 
-					bool operator!=(const imageIterator &rhs) {					//Does index comparison
+					bool operator!=(const imageIterator &rhs) {							//Does index comparison
 						if(index == rhs.index){
 							return true;
 						}else{
@@ -192,8 +262,8 @@ namespace BTHJAC013 {
 			};
 			// define begin()/end() to get iterator to start and
 			// "one-past" end.
-			imageIterator begin(void) { return imageIterator(data.get());} // etc
-			imageIterator end(void) {return imageIterator(this->data.get(), width * height);}
+			imageIterator begin() const { return imageIterator(this->data.get());}
+			imageIterator end() {return imageIterator(this->data.get(), width * height);}
 	};
 }
 #endif
