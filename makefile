@@ -4,7 +4,7 @@ CCFLAGS= -std=c++11
 SOURCES= main.cpp Image.h Image.cpp
 OBJECTS= main.o Image.o
 
-TEST_SOURCES=src/Image.cpp src/Unittests.cpp
+TEST_SOURCES=Image.cpp Unittests.cpp
 TEST_OBJECTS=$(TEST_SOURCES:.cpp=.o)
 
 EXE_NAME=imageops
